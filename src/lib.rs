@@ -258,73 +258,73 @@ impl<'x> MessageBuilder<'x> {
 
     /// Set the Message-ID header. If no Message-ID header is set, one will be
     /// generated automatically.
-    pub fn message_id(self, value: impl Into<MessageId<'x>>) -> Self {
+    pub fn message_id(&mut self, value: impl Into<MessageId<'x>>) -> &mut Self {
         self.header("Message-ID", value.into())
     }
 
     /// Set the In-Reply-To header.
-    pub fn in_reply_to(self, value: impl Into<MessageId<'x>>) -> Self {
+    pub fn in_reply_to(&mut self, value: impl Into<MessageId<'x>>) -> &mut Self {
         self.header("In-Reply-To", value.into())
     }
 
     /// Set the References header.
-    pub fn references(self, value: impl Into<MessageId<'x>>) -> Self {
+    pub fn references(&mut self, value: impl Into<MessageId<'x>>) -> &mut Self {
         self.header("References", value.into())
     }
 
     /// Set the Sender header.
-    pub fn sender(self, value: impl Into<Address<'x>>) -> Self {
+    pub fn sender(&mut self, value: impl Into<Address<'x>>) -> &mut Self {
         self.header("Sender", value.into())
     }
 
     /// Set the From header.
-    pub fn from(self, value: impl Into<Address<'x>>) -> Self {
+    pub fn from(&mut self, value: impl Into<Address<'x>>) -> &mut Self {
         self.header("From", value.into())
     }
 
     /// Set the To header.
-    pub fn to(self, value: impl Into<Address<'x>>) -> Self {
+    pub fn to(&mut self, value: impl Into<Address<'x>>) -> &mut Self {
         self.header("To", value.into())
     }
 
     /// Set the Cc header.
-    pub fn cc(self, value: impl Into<Address<'x>>) -> Self {
+    pub fn cc(&mut self, value: impl Into<Address<'x>>) -> &mut Self {
         self.header("Cc", value.into())
     }
 
     /// Set the Bcc header.
-    pub fn bcc(self, value: impl Into<Address<'x>>) -> Self {
+    pub fn bcc(&mut self, value: impl Into<Address<'x>>) -> &mut Self {
         self.header("Bcc", value.into())
     }
 
     /// Set the Reply-To header.
-    pub fn reply_to(self, value: impl Into<Address<'x>>) -> Self {
+    pub fn reply_to(&mut self, value: impl Into<Address<'x>>) -> &mut Self {
         self.header("Reply-To", value.into())
     }
 
     /// Set the Subject header.
-    pub fn subject(self, value: impl Into<Text<'x>>) -> Self {
+    pub fn subject(&mut self, value: impl Into<Text<'x>>) -> &mut Self {
         self.header("Subject", value.into())
     }
 
     /// Set the Date header. If no Date header is set, one will be generated
     /// automatically.
-    pub fn date(self, value: impl Into<Date>) -> Self {
+    pub fn date(&mut self, value: impl Into<Date>) -> &mut Self {
         self.header("Date", value.into())
     }
 
     /// Add a custom header.
     pub fn header(
-        mut self,
+        &mut self,
         header: impl Into<Cow<'x, str>>,
         value: impl Into<HeaderType<'x>>,
-    ) -> Self {
+    ) -> &mut Self {
         self.headers.push((header.into(), value.into()));
         self
     }
 
     /// Set custom headers.
-    pub fn headers<T, U, V>(mut self, header: T, values: U) -> Self
+    pub fn headers<T, U, V>(&mut self, header: T, values: U) -> &mut Self
     where
         T: Into<Cow<'x, str>>,
         U: IntoIterator<Item = V>,
@@ -342,7 +342,7 @@ impl<'x> MessageBuilder<'x> {
     /// Set the plain text body of the message. Note that only one plain text body
     /// per message can be set using this function.
     /// To build more complex MIME body structures, use the `body` method instead.
-    pub fn text_body(mut self, value: impl Into<Cow<'x, str>>) -> Self {
+    pub fn text_body(&mut self, value: impl Into<Cow<'x, str>>) -> &mut Self {
         self.text_body = Some(MimePart::new_text(value));
         self
     }
@@ -350,18 +350,18 @@ impl<'x> MessageBuilder<'x> {
     /// Set the HTML body of the message. Note that only one HTML body
     /// per message can be set using this function.
     /// To build more complex MIME body structures, use the `body` method instead.
-    pub fn html_body(mut self, value: impl Into<Cow<'x, str>>) -> Self {
+    pub fn html_body(&mut self, value: impl Into<Cow<'x, str>>) -> &mut Self {
         self.html_body = Some(MimePart::new_html(value));
         self
     }
 
     /// Add a binary attachment to the message.
     pub fn binary_attachment(
-        mut self,
+        &mut self,
         content_type: impl Into<Cow<'x, str>>,
         filename: impl Into<Cow<'x, str>>,
         value: impl Into<Cow<'x, [u8]>>,
-    ) -> Self {
+    ) -> &mut Self {
         self.attachments
             .get_or_insert_with(Vec::new)
             .push(MimePart::new_binary(content_type, value).attachment(filename));
@@ -370,11 +370,11 @@ impl<'x> MessageBuilder<'x> {
 
     /// Add a text attachment to the message.
     pub fn text_attachment(
-        mut self,
+        &mut self,
         content_type: impl Into<Cow<'x, str>>,
         filename: impl Into<Cow<'x, str>>,
         value: impl Into<Cow<'x, str>>,
-    ) -> Self {
+    ) -> &mut Self {
         self.attachments
             .get_or_insert_with(Vec::new)
             .push(MimePart::new_text_other(content_type, value).attachment(filename));
@@ -383,11 +383,11 @@ impl<'x> MessageBuilder<'x> {
 
     /// Add an inline binary to the message.
     pub fn binary_inline(
-        mut self,
+        &mut self,
         content_type: impl Into<Cow<'x, str>>,
         cid: impl Into<Cow<'x, str>>,
         value: impl Into<Cow<'x, [u8]>>,
-    ) -> Self {
+    ) -> &mut Self {
         self.attachments
             .get_or_insert_with(Vec::new)
             .push(MimePart::new_binary(content_type, value).inline().cid(cid));
@@ -395,13 +395,13 @@ impl<'x> MessageBuilder<'x> {
     }
 
     /// Set a custom MIME body structure.
-    pub fn body(mut self, value: MimePart<'x>) -> Self {
+    pub fn body(&mut self, value: MimePart<'x>) -> &mut Self {
         self.body = Some(value);
         self
     }
 
     /// Build the message.
-    pub fn write_to(self, mut output: impl Write) -> io::Result<()> {
+    pub fn write_to(&mut self, mut output: impl Write) -> io::Result<()> {
         let mut has_date = false;
         let mut has_message_id = false;
 
@@ -436,40 +436,45 @@ impl<'x> MessageBuilder<'x> {
     }
 
     /// Write the message body without headers.
-    pub fn write_body(self, output: impl Write) -> io::Result<()> {
-        (if let Some(body) = self.body {
-            body
+    pub fn write_body(&mut self, output: impl Write) -> io::Result<()> {
+        (if let Some(body) = self.body.as_ref() {
+            body.clone()
         } else {
-            match (self.text_body, self.html_body, self.attachments) {
+            match (
+                self.text_body.as_ref(),
+                self.html_body.as_ref(),
+                self.attachments.as_ref(),
+            ) {
                 (Some(text), Some(html), Some(attachments)) => {
-                    let mut parts = Vec::with_capacity(attachments.len() + 1);
+                    let mut parts: Vec<MimePart> = Vec::with_capacity(attachments.len() + 1);
                     parts.push(MimePart::new_multipart(
                         "multipart/alternative",
-                        vec![text, html],
+                        vec![text.to_owned(), html.to_owned()],
                     ));
-                    parts.extend(attachments);
+                    parts.extend(attachments.to_vec());
 
                     MimePart::new_multipart("multipart/mixed", parts)
                 }
-                (Some(text), Some(html), None) => {
-                    MimePart::new_multipart("multipart/alternative", vec![text, html])
-                }
+                (Some(text), Some(html), None) => MimePart::new_multipart(
+                    "multipart/alternative",
+                    vec![text.to_owned(), html.to_owned()],
+                ),
                 (Some(text), None, Some(attachments)) => {
                     let mut parts = Vec::with_capacity(attachments.len() + 1);
-                    parts.push(text);
-                    parts.extend(attachments);
-                    MimePart::new_multipart("multipart/mixed", parts)
+                    parts.push(text.to_owned());
+                    parts.extend(attachments.to_owned());
+                    MimePart::new_multipart("multipart/mixed", parts.to_owned())
                 }
-                (Some(text), None, None) => text,
+                (Some(text), None, None) => text.to_owned(),
                 (None, Some(html), Some(attachments)) => {
                     let mut parts = Vec::with_capacity(attachments.len() + 1);
-                    parts.push(html);
-                    parts.extend(attachments);
+                    parts.push(html.to_owned());
+                    parts.extend(attachments.to_owned());
                     MimePart::new_multipart("multipart/mixed", parts)
                 }
-                (None, Some(html), None) => html,
+                (None, Some(html), None) => html.to_owned(),
                 (None, None, Some(attachments)) => {
-                    MimePart::new_multipart("multipart/mixed", attachments)
+                    MimePart::new_multipart("multipart/mixed", attachments.to_owned())
                 }
                 (None, None, None) => MimePart::new_text("\n"),
             }
@@ -480,14 +485,14 @@ impl<'x> MessageBuilder<'x> {
     }
 
     /// Build message to a Vec<u8>.
-    pub fn write_to_vec(self) -> io::Result<Vec<u8>> {
+    pub fn write_to_vec(&mut self) -> io::Result<Vec<u8>> {
         let mut output = Vec::new();
         self.write_to(&mut output)?;
         Ok(output)
     }
 
     /// Build message to a String.
-    pub fn write_to_string(self) -> io::Result<String> {
+    pub fn write_to_string(&mut self) -> io::Result<String> {
         let mut output = Vec::new();
         self.write_to(&mut output)?;
         String::from_utf8(output).map_err(|err| io::Error::new(io::ErrorKind::Other, err))
@@ -507,7 +512,8 @@ mod tests {
 
     #[test]
     fn build_nested_message() {
-        let output = MessageBuilder::new()
+        let mut message_builder = MessageBuilder::new();
+        let output = message_builder
             .from(Address::new_address("John Doe".into(), "john@doe.com"))
             .to(Address::new_address("Jane Doe".into(), "jane@doe.com"))
             .subject("RFC 8621 Section 4.1.4 test")
